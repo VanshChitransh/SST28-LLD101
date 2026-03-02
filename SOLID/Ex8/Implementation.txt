@@ -1,0 +1,25 @@
+This is an another problem violation ISP - Interface Segregation principle.
+So as mentioned in the readme file we have this ClubAdminTools interface, all in one as it includes
+finance operations, minuts operations, event operations.
+
+Now the the files like TreasurerTool, SecretaryTool , EventLeadTool implements this one fat interface and that 
+is ClubAdminTools, but as we can see the name of the files all of them have different purposes.
+
+TreasurerTool is for finance operations like adding income or expenses.
+EventLeadTool is for event operations performing methods like creating event and getting the count of the event.
+SecretaryTool is for the minutes operations.
+
+But as they implement the ClubAdminTools they have to implement the other methods which is not needed for them.
+
+Thus we have break down the ClubAdminTools interface into 3 different interfaces, for their respective purposes.
+
+FinanceOperations: This interface will take care about the things related to the finances.
+MinutesOperations: This interface will take care about the things related to the secretary ops.
+EventOperations: This interface will take care about the things related to the events.
+
+Thus rather than implementing one single interface ClubAdminTools, we will use this interfaces wherver is need for their
+respective purposes.
+
+Changed TreasurerTool, EventLeadTool, SecretaryTool to implement these interfaces.
+
+And mainly changed the ClubConsole file as it is using ClubAdminTools, we have changed with these new interfaces.

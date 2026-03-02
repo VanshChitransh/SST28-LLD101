@@ -1,0 +1,26 @@
+As it is mentioned in the readme file only , the SmartClassroomDevice is an interface with all the methods
+and we consider this as the fat interface.
+
+This is because all the classes that implements this interface, don't need all the methods inside them, but as they are
+implementing SmartClassroomDevice they have to implement that irrelevant methods.
+
+Here are the changes that we have done:
+1. Powerable.java: So rather than having the power on and power off function inside the SmartClassroomDevice, we have created
+this as the separate interface thus the classes that needs this methods uses these methods only.
+
+2. BrightnessControllable.java: We have removed the setBrightness function from the SmartClassroomDevice and added
+inside this BrightnessControllable
+
+3. TemperatureControllable.java: We have removed the setTemperature function from the SmartClassroomDevice and added
+inside this TemperatureControllable
+
+4. AttendanceScannable: We have removed the scanAttendance function from the SmartClassroomDevice and added inside this
+AttendanceScannable
+
+5. Now the files like Projector, LightsPanel, AirConditioner, AttendanceScanner will implement this interfaces that we have 
+built, and removed the SmartClassroomDevice as it is no more needed.
+
+6. DeviceRegistry: Initially when we have this SmartClassroomDevice, the DeviceRegistry contains that only, so removed that
+and changed to Object type, and used the <T> which is the java generic as we don't know which interface will be returned.
+
+7. ClassroomController: removed the SmartClassroomDevice and added the interfaces which are needed.
