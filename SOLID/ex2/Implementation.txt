@@ -1,0 +1,44 @@
+According to the Readme.md file, it is clearly mentioned that the CafeteriaSystem do all the tasks by itself.
+
+Thus there are different things that this service method is doing which can be separated:
+- harcoded tax rules, discount rules and file storage.
+- tax and discount computations (all the arithmetic stuffs)
+- printing/Output
+- invoice formatting
+
+So breaking down the CafeteriaSystem step by step:
+
+1. TaxPolicy : created this interface because the tax rules are harcoded, and the CafeteriaSystem completely
+depends on this tax rules, if some different tax rule introduce in future then we have to add this if, else cases 
+with the types - not a good design.
+
+Thus this interface will take care of every new class created in future, we just have to change the constructor in the 
+Main class that's it, the method will be same and we will implement a new class for that tax rule and the logic inside it.
+
+As you can see we have implemented different files for StudentTaxPolicy and StaffTaxPolicy
+
+2. Discount Policy: same reason just like the TaxPolicy , as the discount rules are hardcoded as well, we have make different files 
+accordingly
+
+Ex: StaffDiscountPolicy , StudentDiscountPolicy etc.
+
+3. PricingCalculator: This is created because, we can see that the CafeteriaSystem calculates the tax and discount inside,
+so removed this calculation in this pricing calculator which calculates  all the things: total, subtotal, tax percentage, tax amount,
+discount.
+
+And created an object called PricingBreakdown, which includes all of these fields thus it becomes easy we can pass this object and use 
+all the fields which we need thus taking care of all the arithmetic operations.
+
+4. InvoiceStore: create this interface because of the persistence on the DB as we have file store now we can use this one interface
+
+So initially the CafeteriaSystem depends on the File store, if in future we decide to move to the Database like MySQL, then we have to change
+the CafeteriaSystem file as well
+By creating this interface this becomes easy we just have to change the object declaration by adding a new class.
+
+5. InvoiceFormatter: this class already exists in the file system but not functional, remove all the formatting logic from the 
+CafeteriaSystem and moved inside this class to take care of thus this class's single responsibility is to take care of the formatting of the invoice.
+
+6. InvoicePresenter: this might be a take like if i include this in the CafeteriaSystem then it is a simple approach, where the CafeteriaSystem is responsible
+for the workflow and printing.
+
+But i thought just like the previous assignment moving the priting logic into a different class will make more sense.

@@ -1,3 +1,3 @@
-public interface TaxCalculator {
+public interface TaxPolicy {
     double taxPercent(String customerType);
 }

@@ -1,0 +1,47 @@
+According to the Readme.md file, it is clearly mentioned that the HostelFeeCalculator have this switch case statement for the 
+Room types and also if-else chain for Add Ons, so if in future we want to add another room type or add on then we have to modify
+this code which will result in violation of OCP
+
+Thus, we have to design a system, which maintains this OCP principle by defining different room classes and add on classes with an interface
+with all the methods that are needed.
+The hardcoded things are:
+- Room types: Single, Double,Triple, Deluxe prices
+- AddOns: Mess, Gym, Laundry prices.
+
+
+So breaking down the HostelFeeCalculator and creating different classes:
+
+1. RoomPricing : created this interface , because it contains all the methods that will be used by different room types.
+Methods: monthlyFee, depositFee, displayName
+
+By creating this interface it becomes easy to intergrate any room type, the only steps are implement this interface and 
+add these methods, with all the values that are defined for it.
+
+Thus, SingleRoomPricing, DoubleRoomPricing, TripleRoomPricing and DeluxeRoomPricing these classes are created implementing this
+interface.
+We have to change the main method only for this, the type of room we want we have create that object and pass it to HostelFeeCalculator
+all the calculation will be done their using the fields and the methods that class contains.
+
+2. AddOnPricing: very similar to the RoomPricing, this interface also contains the methods which should be present in all the classes
+which will implement this.
+
+In future if we want to add some new addon, then simply we have to create the class, implement this interface and add the methods which are 
+inside the interface, that's it and then pass that  Addon decalaration in the main method in the arraylist of the AddOnPricing.
+
+Thus MessPricing, LaundryPricing, GymPricing, etc. classes are created implementing this interface.
+
+3. By creation of this there is no need of switch case and the if else statements now, the only thing needed is we have to create
+objects in the main method and then pass that as the argument in this process method of the HostelFeeCalculator.
+
+And this method will calculate the monthlyFee of the room type, then the add ons will be added inside it and also calculate the deposit fee as well.
+This will be sent to the Receipt printer, then also will be saved in the FakeBookingRepo.
+
+We can simply call the displayName method in the Receiptprinter to get the name of the room type and also the arraylist of the addons.
+
+For the stretch goal,
+We have asked to add a late fee rule, so this can be added in the add ons as well,
+But I thought (this is my opinion), add ons are the extra things that we take, but if I want to add a new type of extra fee like interest or something
+then we can't add that thing in the Add on, that is why created the FeePricing interface and a LateFeePricing class implementing this interface.
+
+So that is why we have to add one loop in the process method, if this thing is added in the AddOns then there is literally no change in the process method,
+just on more class will be created and that decalaration is passes in the list, that's it.

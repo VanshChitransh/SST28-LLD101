@@ -1,12 +1,19 @@
 import java.nio.charset.StandardCharsets;
 
 public class PdfExporter extends Exporter {
-    protected ExportResult doExport(ExportRequest req) {
+    @Override
+    public ExportResult export(ExportRequest req) {
+        
+        String title = req.title == null ? "" : req.title;
         String body = req.body == null ? "" : req.body;
-        if (body.length() > 20) {
-            return new ExportResult("PDF cannot handle content > 20 chars");
+        String content = title +  body;
+
+
+        if (content.length() > 20) {
+           return new ExportResult("PDF cannot handle > 20 chars");
         }
-        String pdf = "PDF(" + req.title + "):" + body;
-        return new ExportResult("application/pdf", pdf.getBytes(StandardCharsets.UTF_8));
+        
+        String fakePdf = "PDF(" + title + "):" + body;
+        return new ExportResult("application/pdf", fakePdf.getBytes(StandardCharsets.UTF_8));
     }
 }

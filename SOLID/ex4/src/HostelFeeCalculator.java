@@ -1,46 +1,28 @@
 import java.util.*;
 
 public class HostelFeeCalculator {
-    private final List<RoomPricing> roomPricings;
-    private final List<AddOnPricing> addOnPricings;
-    private final BookingRepository repo;
-    private final double defaultBase;
+    private final FakeBookingRepo repo;
 
-    public HostelFeeCalculator(List<RoomPricing> roomPricings, List<AddOnPricing> addOnPricings,
-                               BookingRepository repo, double defaultBase) {
-        this.roomPricings = roomPricings;
-        this.addOnPricings = addOnPricings;
-        this.repo = repo;
-        this.defaultBase = defaultBase;
-    }
+    public HostelFeeCalculator(FakeBookingRepo repo) { this.repo = repo; }
 
-    public void process(BookingRequest req) {
-        Money monthly = calcMonthly(req);
-        Money deposit = new Money(5000.00);
-        ReceiptPrinter.print(req, monthly, deposit);
+    // OCP violation: switch + add-on branching + printing + persistence.
+    public void process(RoomPricing room, List<AddOnPricing> addOns, List<FeePricing> fees) {
+        Money monthly = room.monthlyFee();
+        
+        for(AddOnPricing addOn : addOns){
+            monthly = monthly.plus(addOn.price());
+        }
 
+        Money deposit = room.depositFee();
+
+       for(FeePricing l: fees){
+            monthly = monthly.plus(l.calculate());
+       }
+
+        //Generating Id
         String bookingId = "H-" + (7000 + new Random(1).nextInt(1000));
-        repo.save(bookingId, req, monthly, deposit);
-    }
 
-    private Money calcMonthly(BookingRequest req) {
-        double base = defaultBase;
-        for (RoomPricing rp : roomPricings) {
-            if (rp.supports(req.roomType)) {
-                base = rp.basePrice();
-                break;
-            }
-        }
-
-        double add = 0.0;
-        for (AddOn a : req.addOns) {
-            for (AddOnPricing ap : addOnPricings) {
-                if (ap.supports(a)) {
-                    add += ap.price();
-                    break;
-                }
-            }
-        }
-        return new Money(base + add);
+         ReceiptPrinter.print(room, addOns, fees, monthly, deposit);
+        repo.save(bookingId, room, addOns, fees, monthly, deposit);
     }
 }

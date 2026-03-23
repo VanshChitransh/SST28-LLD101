@@ -11,23 +11,23 @@ import java.util.Map;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        String configFile = "metrics.properties";
+        String propsPath = "metrics.properties";
 
-        MetricsLoader metricsImporter = new MetricsLoader();
-        MetricsRegistry populatedRegistry = metricsImporter.loadFromFile(configFile);
+        MetricsLoader loader = new MetricsLoader();
+        MetricsRegistry loaded = loader.loadFromFile(propsPath);
 
         // In a correct design, loader should populate the SAME singleton instance.
-        MetricsRegistry sharedRegistry = MetricsRegistry.getInstance();
+        MetricsRegistry global = MetricsRegistry.getInstance();
 
-        System.out.println("Loaded registry instance  : " + System.identityHashCode(populatedRegistry));
-        System.out.println("Global registry instance  : " + System.identityHashCode(sharedRegistry));
+        System.out.println("Loaded registry instance  : " + System.identityHashCode(loaded));
+        System.out.println("Global registry instance  : " + System.identityHashCode(global));
 
-        sharedRegistry.increment("REQUESTS_TOTAL");
-        System.out.println("\nREQUESTS_TOTAL = " + sharedRegistry.getCount("REQUESTS_TOTAL"));
+        global.increment("REQUESTS_TOTAL");
+        System.out.println("\nREQUESTS_TOTAL = " + global.getCount("REQUESTS_TOTAL"));
 
         System.out.println("\nAll counters:");
-        for (Map.Entry<String, Long> entry : sharedRegistry.getAll().entrySet()) {
-            System.out.println("  " + entry.getKey() + " = " + entry.getValue());
+        for (Map.Entry<String, Long> e : global.getAll().entrySet()) {
+            System.out.println("  " + e.getKey() + " = " + e.getValue());
         }
 
         System.out.println("\nTIP: Run ConcurrencyCheck / ReflectionAttack / SerializationCheck for validations.");

@@ -22,7 +22,6 @@ Tasks
    - **Lazy initialization**
    - **Private constructor**
    - Thread safety: pick one approach (recommended: static holder or double-checked locking)
-   - Use `alreadyInitialized` flag and `RegistryHolder` with `SOLE_INSTANCE`
 
 2) Block reflection-based multiple construction
    - If the constructor is called when an instance already exists, throw an exception
@@ -33,7 +32,6 @@ Tasks
 
 4) Update `MetricsLoader` to use the singleton
    - No `new MetricsRegistry()` anywhere in code
-   - Use `metricsInstance` from `getInstance()` to populate via `loadFromFile(filePath)`
 
 Acceptance
 - Single instance across threads within a JVM run.
@@ -41,8 +39,8 @@ Acceptance
 - Deserialization returns the same instance.
 - Loading metrics from `metrics.properties` works.
 - Values are accessible via:
-  - `increment(metricKey)`
-  - `getCount(metricKey)`
+  - `increment(key)`
+  - `getCount(key)`
   - `getAll()`
 
 Build/Run (Starter)

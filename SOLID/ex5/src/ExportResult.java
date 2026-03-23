@@ -1,22 +1,29 @@
 public class ExportResult {
     public final String contentType;
     public final byte[] bytes;
-    public final boolean success;
-    public final String errorMsg;
 
-    // success
+    private final boolean success;
+    private final String error;
+
     public ExportResult(String contentType, byte[] bytes) {
         this.contentType = contentType;
         this.bytes = bytes;
         this.success = true;
-        this.errorMsg = null;
+        this.error = null;
     }
 
-    // failure
-    public ExportResult(String errorMsg) {
+    public ExportResult(String error) {
         this.contentType = null;
-        this.bytes = new byte[0];
+        this.bytes = null;
         this.success = false;
-        this.errorMsg = errorMsg;
+        this.error = error;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getError() {
+        return error;
     }
 }

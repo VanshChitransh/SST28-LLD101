@@ -1,0 +1,35 @@
+According to the Readme.md file, it is clearly mentioned that the EligibilityEngine have this long if-else  chain
+and it is not feasible violating the OCP principle.
+
+Thus there are different rules that needed to be separated to maintain a good and scalable design:
+The hardcoded rules are:
+- CGR rule
+- Attendance rule
+- Credits rule
+- Disciplinary rule
+
+So breaking down the EligibilityEngine and creating different rules:
+
+1. EligibilityRule: created this interface so that we can apply this to every rules, and it becomes
+more easy and maintainable code because we just need to create a class and implement this interface with
+the logic if we want to implement a new rule.
+
+Inside this we can create the methods as well in this interface but we didn't because this is not much complicated case,
+if i want to have many things together then i have to call many methods together which becomes messy, and not maintainable as
+well , also it stores the state breaking the concept of interface.
+
+Thus,
+2. RuleResult: this class is created with all the attributes, and passed this to the EligibilityRule for simplicity 
+and preventing the headache of states in the interface.
+
+Also as a stretch goal,
+3. RuleConfig : created this class with all the defined threshold, so you don't need to add in the rules
+arraylist by yourself just use the config.cgr, etc. for all the thresholds while adding in the rules class.
+
+4. CGRRule, AttendanceRule, CreditsRule, DisciplinaryRule:
+These files are created to maintain their own logic, rather than writing long if-else chains in the 
+EligibilityEngine we can implement the interface and use the evaluate method by passing the StudentProfile and 
+checking all the rules in the loop in the EligibilityEngine.
+
+So if i want to add a new rule then only thing i want to add is a new class which implements the EligibilityRule,
+and return the logic, and add the threshold in the RuleConfig file following to the rules arraylist.

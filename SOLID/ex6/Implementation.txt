@@ -1,0 +1,16 @@
+According to Readme.md file it is clearly mentioned that this code is violating the LSP principle, and how it is violating
+is the parent which is the NotificationSender class, always expects the Notification from it's child class.
+
+Now the children: SmsSender, WhatsAppSender, EmailSender each of them are behaving differently and thus breaking the LSP principle.
+For the SmsSender it ignores subject, thus the design of this is inconsistent, as the parent expects a complete
+message , but here it is not passing the subject.
+
+For the WhatsAppSender there is a precondition, that the phone number should begin with + and condition like this is not mentioned
+anywhere and also the parent expects the result, not any argument exception, thus this is also breaking the behavior the parent expects.
+
+And for the EmailSender it is truncating the response by applying a precondition which is something that shows data loss.
+
+Thus changing each of them by defining what we actually want in the parent class and implementing in that way in the child class.
+1. SmsSender : Added the subject explicitly to show the consistent behavior
+2. WhatsAppSender: Removed the precondition check as the parent did not expect any exception
+3. EmailSender: Removed the precondition of the length, as there is a data loss by truncating the message.

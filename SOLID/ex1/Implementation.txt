@@ -1,0 +1,44 @@
+According to the Readme.md file, it is clearly mentioned that the OnboardingService do all the tasks by itself.
+
+Thus there are different things that this service method is doing which can be separated:
+- Input Parsing
+- Validation
+- ID Generation
+- Data Assembly
+- Persistence in the DB
+- Output/Printing
+
+So breaking down the OnboardingService step by step:
+
+1. RawInputParser : This class will only take care of the parsing, so we will pass the raw input 
+in the method of this class and pass the logic of the parsing, in the parse() method, which will take the 
+raw string and returns the Map<String, String>
+
+This method is static so we can directly call this using the class no need to create any object for this.
+Because this does not depends any object variable only a string input and performing the task that's it.
+
+2. StudentValidator : This class will only take care of the validation of the Map, that we have returned
+from the RawInputParser.parse() method, and it will return an ArrayList of string which includes the 
+errors inside it.
+
+The method is static again, and also we are passing the kv map as the input in this validates method, to extract the things.
+
+3. Created a StudentRepository interface, with the save and the count methods, as we no need to expose
+the methods of the FakeDb to the OnboardingService class.
+
+Thus it includes the save and the count method and we will implement this interface in the FakeDb class.
+The logic is already written in the FakeDb to implement these methods.
+
+Also why have we used this interface upon the class is because, we just want implement what to do, not how to do it
+If in future if we decide to implement a different type of storage then we have to change the class and also the implementation
+of that class in the service which will violate the open/closed principle.
+
+4. OnboardingPresenter: This class will take care of all the types of printing, so it will have three static methods:
+one for printing input, one for printing errors and one fore printing success.
+
+And we will replace the logic of printing things from the OnboardingService into the OnboardingPresenter class.
+
+For the goals:
+Added one more string to validates the output that if we passes something invalid then what does it shows.
+And for the hardcoded programs, we created a ProgramRegistry class with the methods like isValid, getAllowed program as well
+to get the programs and use these methods instead of hardcoding them into the StudentValidator class.

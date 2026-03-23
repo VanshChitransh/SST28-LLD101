@@ -1,4 +1,10 @@
-public class GymPricing implements AddOnPricing {
-    public boolean supports(AddOn a) { return a == AddOn.GYM; }
-    public double price() { return 300.0; }
+public class GymPricing implements AddOnPricing{
+    @Override
+    public Money price(){
+        return new Money(300.0);
+    }
+    @Override
+    public String displayName() {
+        return "GYM";
+    }
 }

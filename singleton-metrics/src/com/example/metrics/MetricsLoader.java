@@ -9,25 +9,25 @@ import java.util.Properties;
  */
 public class MetricsLoader {
 
-    public MetricsRegistry loadFromFile(String filePath) throws IOException {
-        Properties config = new Properties();
-        try (FileInputStream inputStream = new FileInputStream(filePath)) {
-            config.load(inputStream);
+    public MetricsRegistry loadFromFile(String path) throws IOException {
+        Properties props = new Properties();
+        try (FileInputStream fis = new FileInputStream(path)) {
+            props.load(fis);
         }
 
         // Use singleton - not new instance
-        MetricsRegistry metricsInstance = MetricsRegistry.getInstance();
+        MetricsRegistry registry = MetricsRegistry.getInstance();
 
-        for (String metricName : config.stringPropertyNames()) {
-            String rawValue = config.getProperty(metricName, "0").trim();
-            long parsedCount;
+        for (String key : props.stringPropertyNames()) {
+            String raw = props.getProperty(key, "0").trim();
+            long v;
             try {
-                parsedCount = Long.parseLong(rawValue);
-            } catch (NumberFormatException exc) {
-                parsedCount = 0L;
+                v = Long.parseLong(raw);
+            } catch (NumberFormatException e) {
+                v = 0L;
             }
-            metricsInstance.setCount(metricName, parsedCount);
+            registry.setCount(key, v);
         }
-        return metricsInstance;
+        return registry;
     }
 }

@@ -14,29 +14,29 @@ public class MetricsRegistry implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Map<String, Long> metricStore = new HashMap<>();
+    private final Map<String, Long> counters = new HashMap<>();
 
     // Flag to block reflection attacks
-    private static boolean alreadyInitialized = false;
+    private static boolean instanceCreated = false;
 
     // Private constructor - blocks reflection attack
     private MetricsRegistry() {
         synchronized (MetricsRegistry.class) {
-            if (alreadyInitialized) {
+            if (instanceCreated) {
                 throw new RuntimeException("Use getInstance() - reflection not allowed!");
             }
-            alreadyInitialized = true;
+            instanceCreated = true;
         }
     }
 
     // Static holder - lazy & thread-safe (JVM guarantees)
-    private static class RegistryHolder {
-        private static final MetricsRegistry SOLE_INSTANCE = new MetricsRegistry();
+    private static class Holder {
+        private static final MetricsRegistry INSTANCE = new MetricsRegistry();
     }
 
     // Thread-safe lazy initialization
     public static MetricsRegistry getInstance() {
-        return RegistryHolder.SOLE_INSTANCE;
+        return Holder.INSTANCE;
     }
 
     // Preserve singleton on deserialization
@@ -45,19 +45,19 @@ public class MetricsRegistry implements Serializable {
         return getInstance();
     }
 
-    public synchronized void setCount(String metricKey, long metricValue) {
-        metricStore.put(metricKey, metricValue);
+    public synchronized void setCount(String key, long value) {
+        counters.put(key, value);
     }
 
-    public synchronized void increment(String metricKey) {
-        metricStore.put(metricKey, getCount(metricKey) + 1);
+    public synchronized void increment(String key) {
+        counters.put(key, getCount(key) + 1);
     }
 
-    public synchronized long getCount(String metricKey) {
-        return metricStore.getOrDefault(metricKey, 0L);
+    public synchronized long getCount(String key) {
+        return counters.getOrDefault(key, 0L);
     }
 
     public synchronized Map<String, Long> getAll() {
-        return Collections.unmodifiableMap(new HashMap<>(metricStore));
+        return Collections.unmodifiableMap(new HashMap<>(counters));
     }
 }

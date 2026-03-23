@@ -1,6 +1,15 @@
 public class CreditsRule implements EligibilityRule {
-    public String evaluate(StudentProfile s) {
-        if (s.earnedCredits < 20) return "credits below 20";
-        return null;
+    private final int threshold;
+    
+    public CreditsRule(int threshold) {
+        this.threshold = threshold;
+    }
+    
+    @Override
+    public RuleResult evaluate(StudentProfile s) {
+        if (s.earnedCredits < threshold) {
+            return new RuleResult(false, "credits below " + threshold);
+        }
+        return new RuleResult(true, null);
     }
 }

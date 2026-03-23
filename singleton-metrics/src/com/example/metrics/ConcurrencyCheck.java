@@ -14,36 +14,36 @@ import java.util.concurrent.TimeUnit;
 public class ConcurrencyCheck {
 
     public static void main(String[] args) throws Exception {
-        int workerCount = 80;
-        ExecutorService executor = Executors.newFixedThreadPool(workerCount);
+        int threads = 80;
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
 
-        CountDownLatch readyLatch = new CountDownLatch(workerCount);
-        CountDownLatch goSignal = new CountDownLatch(1);
-        CountDownLatch completionLatch = new CountDownLatch(workerCount);
+        CountDownLatch ready = new CountDownLatch(threads);
+        CountDownLatch start = new CountDownLatch(1);
+        CountDownLatch done = new CountDownLatch(threads);
 
-        Set<Integer> uniqueHashes = ConcurrentHashMap.newKeySet();
+        Set<Integer> identities = ConcurrentHashMap.newKeySet();
 
-        for (int idx = 0; idx < workerCount; idx++) {
-            executor.submit(() -> {
-                readyLatch.countDown();
+        for (int i = 0; i < threads; i++) {
+            pool.submit(() -> {
+                ready.countDown();
                 try {
-                    goSignal.await();
-                    MetricsRegistry registryRef = MetricsRegistry.getInstance();
-                    uniqueHashes.add(System.identityHashCode(registryRef));
+                    start.await();
+                    MetricsRegistry r = MetricsRegistry.getInstance();
+                    identities.add(System.identityHashCode(r));
                 } catch (InterruptedException ignored) {
                     Thread.currentThread().interrupt();
                 } finally {
-                    completionLatch.countDown();
+                    done.countDown();
                 }
             });
         }
 
-        readyLatch.await(2, TimeUnit.SECONDS);
-        goSignal.countDown();
-        completionLatch.await(3, TimeUnit.SECONDS);
-        executor.shutdownNow();
+        ready.await(2, TimeUnit.SECONDS);
+        start.countDown();
+        done.await(3, TimeUnit.SECONDS);
+        pool.shutdownNow();
 
-        System.out.println("Unique instances seen: " + uniqueHashes.size());
-        System.out.println("Identities: " + uniqueHashes);
+        System.out.println("Unique instances seen: " + identities.size());
+        System.out.println("Identities: " + identities);
     }
 }
